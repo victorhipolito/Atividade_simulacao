@@ -30,13 +30,16 @@ class SimGerar:
         self.pos_verdes = list()
         self.pos_vermelhos = list()
         self.pos_tudo = list()
-        self.rodada = 0
+        self.rodada = 1
+        self.gerar_alimento()
+        self.gerar_especies()
+        print(self.pos_tudo)
 
     def gerar_pos(self, item):
         check = True
         while check:
             pos = [sorteio(1, self.area), sorteio(1, self.area)]
-            if len(item) >= 1:
+            if len(self.pos_tudo) >= 1:
                 rep = False
                 for unit in self.pos_tudo:
                     if unit == pos:
@@ -70,3 +73,4 @@ class SimComportamento(SimGerar):
         super().__init__()
         pass
 
+SimGerar()
