@@ -35,38 +35,38 @@ class SimGerar:
         self.gerar_especies()
         print(self.pos_tudo)
 
-    def gerar_pos(self, item):
+    def gerar_pos(self, item, tipo):
         check = True
         while check:
             pos = [sorteio(1, self.area), sorteio(1, self.area)]
             if len(self.pos_tudo) >= 1:
                 rep = False
                 for unit in self.pos_tudo:
-                    if unit == pos:
+                    if unit[1] == pos:
                         rep = True
                 if not rep:
                     item.append(pos)
-                    self.pos_tudo.append(pos)
+                    self.pos_tudo.append([tipo,pos])
                     check = False
             else:
                 item.append(pos)
-                self.pos_tudo.append(pos)
+                self.pos_tudo.append([tipo,pos])
                 check = False
 
     def gerar_alimento(self):
         # Gerar comida inicialmente
         if self.pos_alimento == list():
             for _ in range(0,self.alimento):
-                self.gerar_pos(self.pos_alimento)
+                self.gerar_pos(self.pos_alimento, "Alimento")
         # Gerar comida em x rodadas
         if self.rodada % self.gen_alimento == 0:
-            self.gerar_pos(self.pos_alimento)
+            self.gerar_pos(self.pos_alimento, "Alimento")
 
     def gerar_especies(self):
         for _ in range(0,self.num_verdes):
-            self.gerar_pos(self.pos_verdes)
+            self.gerar_pos(self.pos_verdes, "Verde")
         for _ in range(0,self.num_vermelhos):
-            self.gerar_pos(self.pos_vermelhos)
+            self.gerar_pos(self.pos_vermelhos, "Vermelho")
 
 class SimComportamento(SimGerar):
     def __init__(self):
