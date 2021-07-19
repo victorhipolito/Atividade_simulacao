@@ -9,9 +9,11 @@
 # Quantos de cada+ raça morreram, quantos foram gerados e a porcentagem de um sobre o outro.
 
 from random import randint as sorteio
+from random import choice as escolha
 from threading import Thread as Corrente
 from time import sleep
-from func_xtra import modulo
+from func_xtra import modulo, dis_vet
+
 
 class SimGerar:
     def __init__(self):
@@ -69,18 +71,26 @@ class SimGerar:
         for _ in range(0,self.num_vermelhos):
             self.gerar_pos(self.pos_vermelhos, "Vermelho")
 
+
 class SimComportamento(SimGerar):
     def __init__(self):
         super().__init__()
 
-    def mov_especies(self):
-        # Verdes
-'''        for verde in self.pos_verdes:
+    def comp_escolherComida(self, especie):
+        comida_perto = list()
+        for ser in especie:
+            dis_menor = None
             for alimento in self.pos_alimento:
-                dis_menor = None
-                casas = 0
                 if alimento == self.pos_alimento[0]:
                     dis_menor = alimento
                 else:
-                    '''
+                    if dis_vet(ser,alimento) < dis_vet(ser, dis_menor):
+                        dis_menor = alimento
+                    elif dis_vet(ser,alimento) == dis_vet(ser, dis_menor):
+                        dis_menor = escolha([alimento, dis_menor])
+            comida_perto.append(dis_menor)
+        return comida_perto
+
+    
+
 
