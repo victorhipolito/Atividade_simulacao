@@ -11,6 +11,7 @@
 from random import randint as sorteio
 from threading import Thread as Corrente
 from time import sleep
+from func_xtra import modulo
 
 class SimGerar:
     def __init__(self):
@@ -21,8 +22,8 @@ class SimGerar:
             self.alimento = int(input("Qual a quantidade inicial de alimento?\n _ "))
             self.gen_alimento = int(input("A geração posterior de alimento será de quantas em quantas rodadas?\n _ "))
 
-            if self.alimento > self.area**2:
-                print("Valor de alimento inválido.")
+            if self.alimento + self.num_vermelhos + self.num_verdes > self.area**2:
+                print("Valores inválidos.")
                 continue
             else:
                 break
@@ -71,6 +72,15 @@ class SimGerar:
 class SimComportamento(SimGerar):
     def __init__(self):
         super().__init__()
-        pass
 
-SimGerar()
+    def mov_especies(self):
+        # Verdes
+'''        for verde in self.pos_verdes:
+            for alimento in self.pos_alimento:
+                dis_menor = None
+                casas = 0
+                if alimento == self.pos_alimento[0]:
+                    dis_menor = alimento
+                else:
+                    '''
+
