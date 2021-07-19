@@ -12,45 +12,61 @@ from random import randint as sorteio
 from threading import Thread as Corrente
 from time import sleep
 
-class SimFixos:
+class SimGerar:
     def __init__(self):
         while True:
             self.area = int(input("Qual o tamanho do seu mapa?\n(Valor x Valor)\n _ "))
+            self.num_verdes = int(input("Qual a quantidade inicial de seres da espécie verde?\n _ "))
+            self.num_vermelhos = int(input("Qual a quantidade inicial de seres da espécie vermelha?\n _ "))
             self.alimento = int(input("Qual a quantidade inicial de alimento?\n _ "))
             self.gen_alimento = int(input("A geração posterior de alimento será de quantas em quantas rodadas?\n _ "))
-            self.pos_alimento = list()
+
             if self.alimento > self.area**2:
                 print("Valor de alimento inválido.")
                 continue
             else:
                 break
+        self.pos_alimento = list()
+        self.pos_verdes = list()
+        self.pos_vermelhos = list()
+        self.pos_tudo = list()
         self.rodada = 0
+
+    def gerar_pos(self, item):
+        check = True
+        while check:
+            pos = [sorteio(1, self.area), sorteio(1, self.area)]
+            if len(item) >= 1:
+                rep = False
+                for unit in self.pos_tudo:
+                    if unit == pos:
+                        rep = True
+                if not rep:
+                    item.append(pos)
+                    self.pos_tudo.append(pos)
+                    check = False
+            else:
+                item.append(pos)
+                self.pos_tudo.append(pos)
+                check = False
 
     def gerar_alimento(self):
         # Gerar comida inicialmente
-        for _ in range(0,self.alimento):
-            check = True
-            while check:
-                pos = [sorteio(1,self.area),sorteio(1,self.area)]
-                if len(self.pos_alimento) > 1:
-                    rep = False
-                    for alimento in self.pos_alimento:
-                        if alimento == pos:
-                            rep = True
-                    if not rep:
-                        self.pos_alimento.append(pos)
-                        check = False
-                else:
-                    self.pos_alimento.append(pos)
-                    check = False
+        if self.pos_alimento == list():
+            for _ in range(0,self.alimento):
+                self.gerar_pos(self.pos_alimento)
         # Gerar comida em x rodadas
         if self.rodada % self.gen_alimento == 0:
-            while True:
-                pos = [sorteio(1, self.area), sorteio(1, self.area)]
-                rep = False
-                for alimento in self.pos_alimento:
-                    if alimento == pos:
-                        rep = True
-                if not rep:
-                    self.pos_alimento.append(pos)
-                    break
+            self.gerar_pos(self.pos_alimento)
+
+    def gerar_especies(self):
+        for _ in range(0,self.num_verdes):
+            self.gerar_pos(self.pos_verdes)
+        for _ in range(0,self.num_vermelhos):
+            self.gerar_pos(self.pos_vermelhos)
+
+class SimComportamento(SimGerar):
+    def __init__(self):
+        super().__init__()
+        pass
+
