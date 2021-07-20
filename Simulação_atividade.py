@@ -103,3 +103,29 @@ class SimComportamento(SimGerar):
             comida_perto.append(ser)
         return comida_perto
 
+    def comp_movimento(self,especie):
+        for org in self.comp_escolherComida(especie):
+            getdis = [org[2][0]-org[0][0],org[2][1]-org[0][1]]
+
+            if dis_vet(org[0],org[2]) == 1:
+                pass
+
+            elif getdis[0] < -1 or getdis[0] > 1:
+                mov = getdis[0] // modulo(getdis[0])
+                novapos = especie[especie.index([org[0],org[1]])][0][0] + mov
+                sobrepos = False
+                for animal in self.pos_tudo:
+                    if animal[0] == [novapos,especie[especie.index([org[0],org[1]])][0][1]] and animal[1] != "Alimento":
+                        sobrepos = True
+                if not sobrepos:
+                    especie[especie.index([org[0],org[1]])][0][0] = novapos
+
+            elif getdis[1] < -1 or getdis[1] > 1:
+                mov = getdis[1] // modulo(getdis[1])
+                novapos = especie[especie.index([org[0],org[1]])][0][1] + mov
+                sobrepos = False
+                for animal in self.pos_tudo:
+                    if animal[0] == [especie[especie.index([org[0],org[1]])][0][0],novapos] and animal[1] != "Alimento":
+                        sobrepos = True
+                if not sobrepos:
+                    especie[especie.index([org[0],org[1]])][0][1] = novapos
