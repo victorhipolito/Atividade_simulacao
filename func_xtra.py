@@ -4,4 +4,4 @@ def modulo(a):
     return a
 
 def dis_vet(a,b):
-    return (modulo(a[0])-modulo(b[0]))+(modulo(a[1])-modulo(b[1]))
+    return modulo(a[0]-b[0])+modulo(a[1]-b[1])
