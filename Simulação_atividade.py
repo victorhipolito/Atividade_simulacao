@@ -22,6 +22,7 @@ class SimGerar:
             self.num_vermelhos = int(input("Qual a quantidade inicial de seres da espécie vermelha?\n _ "))
             self.alimento = int(input("Qual a quantidade inicial de alimento?\n _ "))
             self.gen_alimento = int(input("A geração posterior de alimento será de quantas em quantas rodadas?\n _ "))
+            self.num_rodadas = int(input("Qual o número de rodadas que você quer ver?\n _ "))
 
             if self.alimento + self.num_vermelhos + self.num_verdes > self.area**2:
                 print("Valores inválidos.")
@@ -85,6 +86,16 @@ class SimGerar:
 class SimComportamento(SimGerar):
     def __init__(self):
         super().__init__()
+        while self.num_rodadas != self.rodada:
+            mov_vermelhos = Corrente(target=self.comp_movimento,args=[self.vermelhos,])
+            mov_verdes = Corrente(target=self.comp_movimento, args=[self.verdes, ])
+            mov_vermelhos.start()
+            mov_verdes.start()
+            self.comp_reproduzir(self.verdes,1.0,"Verde")
+            self.comp_reproduzir(self.vermelhos,2.0,"Vermelho")
+            mov_vermelhos.join()
+            mov_verdes.join()
+            self.comp_tempodeVida()
 
     def comp_escolherComida(self, especie):
         comida_perto = list()
