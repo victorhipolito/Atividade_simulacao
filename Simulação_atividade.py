@@ -85,8 +85,6 @@ class SimGerar:
 class SimComportamento(SimGerar):
     def __init__(self):
         super().__init__()
-        print(self.verdes)
-        print(self.vermelhos)
 
     def comp_escolherComida(self, especie):
         comida_perto = list()
@@ -203,6 +201,27 @@ class SimComportamento(SimGerar):
                     pos_def = escolha(pert_ser)
                     self.pos_tudo.append([tipo,pos_def])
                     bicho.append([pos_def,int(comida*5),0.0])
+
+    def comp_tempodeVida(self):
+        self.rodada += 1
+        for verminho in self.vermelhos:
+            self.vermelhos[self.vermelhos.index(verminho)][1] -= 1
+        for verdinho in self.verdes:
+            self.verdes[self.verdes.index(verdinho)][1] -= 1
+        mortos_vermelhos = list()
+        mortos_verdes = list()
+        for verminho in self.vermelhos:
+            if self.vermelhos[self.vermelhos.index(verminho)][1] <= 0:
+                mortos_vermelhos.append(verminho)
+        for verdinho in self.verdes:
+            if self.verdes[self.verdes.index(verdinho)][1] <= 0:
+                mortos_verdes.append(verdinho)
+        for f in mortos_vermelhos:
+            self.vermelhos.remove(f)
+            self.pos_tudo.remove(["Vermelho",f[0]])
+        for f in mortos_verdes:
+            self.verdes.remove(f)
+            self.pos_tudo.remove(["Verde",f[0]])
 
 
 SimComportamento()
