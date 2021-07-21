@@ -88,7 +88,6 @@ class SimComportamento(SimGerar):
         print(self.verdes)
         print(self.vermelhos)
 
-
     def comp_escolherComida(self, especie):
         comida_perto = list()
         for ser in especie:
@@ -113,7 +112,7 @@ class SimComportamento(SimGerar):
             getdis = [org[3][0]-org[0][0],org[3][1]-org[0][1]]
 
             if dis_vet(org[0],org[3]) == 1:
-                pass
+                self.comp_comer(org)
 
             elif getdis[0] < -1 or getdis[0] > 1:
                 mov = getdis[0] // modulo(getdis[0])
@@ -183,10 +182,27 @@ class SimComportamento(SimGerar):
                         self.pos_tudo.remove(["Alimento", self.pos_tudo.index(["Alimento", ser[3]])])
                 break
 
-'''    def comp_reproduzir(self):
-        while True:
-            for ser in self.vermelhos:
-                if ser[2] >= 2.0:'''
+    def comp_reproduzir(self, bicho, comida, tipo):
+        for ser in bicho:
+            pert_ser = [[ser[0][0]-1,ser[0][1]],[ser[0][0],ser[0][1]-1],[ser[0][0]+1,ser[0][1]],[ser[0][0],ser[0][1]+1]]
+            if ser[2] >= comida:
+                bicho[bicho.index(ser)][2] = 0.0
+                sobrepos = False
+                ladoobs = list()
+                for coisa in self.pos_tudo:
+                    for lado in pert_ser:
+                        if coisa[1] == lado:
+                            ladoobs.append(lado)
+                for lado in pert_ser:
+                    for pos in lado:
+                        if not 0 < pos < 11:
+                            ladoobs.append(lado)
+                for rep in ladoobs:
+                    pert_ser.remove(rep)
+                if pert_ser != []:
+                    pos_def = escolha(pert_ser)
+                    self.pos_tudo.append([tipo,pos_def])
+                    bicho.append([pos_def,int(comida*5),0.0])
 
 
 SimComportamento()
