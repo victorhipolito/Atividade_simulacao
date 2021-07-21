@@ -74,15 +74,20 @@ class SimGerar:
         for _ in range(0,self.num_verdes):
             self.gerar_pos(self.verdes, "Verde")
             self.verdes[len(self.verdes) - 1].append(5)
+            self.verdes[len(self.verdes) - 1].append(0.0)
             print(self.verdes)
         for _ in range(0,self.num_vermelhos):
             self.gerar_pos(self.vermelhos, "Vermelho")
             self.vermelhos[len(self.vermelhos) - 1].append(10)
+            self.vermelhos[len(self.vermelhos) - 1].append(0.0)
 
 
 class SimComportamento(SimGerar):
     def __init__(self):
         super().__init__()
+        print(self.verdes)
+        print(self.vermelhos)
+
 
     def comp_escolherComida(self, especie):
         comida_perto = list()
@@ -96,36 +101,92 @@ class SimComportamento(SimGerar):
                 else:
                     if dis_vet(ser[0],alimento) < dis_vet(ser[0], dis_menor):
                         dis_menor = alimento
-                        ser[2] = dis_menor
+                        ser[3] = dis_menor
                     elif dis_vet(ser[0],alimento) == dis_vet(ser[0], dis_menor):
                         dis_menor = escolha([alimento, dis_menor])
-                        ser[2] = dis_menor
+                        ser[3] = dis_menor
             comida_perto.append(ser)
         return comida_perto
 
     def comp_movimento(self,especie):
         for org in self.comp_escolherComida(especie):
-            getdis = [org[2][0]-org[0][0],org[2][1]-org[0][1]]
+            getdis = [org[3][0]-org[0][0],org[3][1]-org[0][1]]
 
-            if dis_vet(org[0],org[2]) == 1:
+            if dis_vet(org[0],org[3]) == 1:
                 pass
 
             elif getdis[0] < -1 or getdis[0] > 1:
                 mov = getdis[0] // modulo(getdis[0])
-                novapos = especie[especie.index([org[0],org[1]])][0][0] + mov
+                novapos = especie[especie.index([org[0],org[1],org[2]])][0][0] + mov
                 sobrepos = False
                 for animal in self.pos_tudo:
-                    if animal[0] == [novapos,especie[especie.index([org[0],org[1]])][0][1]] and animal[1] != "Alimento":
+                    if animal[1] == [novapos,especie[especie.index([org[0],org[1],org[2]])][0][1]] and animal[0] != "Alimento":
                         sobrepos = True
                 if not sobrepos:
-                    especie[especie.index([org[0],org[1]])][0][0] = novapos
+                    especie[especie.index([org[0],org[1],org[2]])][0][0] = novapos
+                    if especie == self.verdes:
+                        self.pos_tudo[self.pos_tudo.index(["Verde",[org[0]]])][1][0] = novapos
+                    else:
+                        self.pos_tudo[self.pos_tudo.index(["Vermelho",[org[0]]])][1][0] = novapos
 
             elif getdis[1] < -1 or getdis[1] > 1:
                 mov = getdis[1] // modulo(getdis[1])
-                novapos = especie[especie.index([org[0],org[1]])][0][1] + mov
+                novapos = especie[especie.index([org[0],org[1],org[2]])][0][1] + mov
                 sobrepos = False
                 for animal in self.pos_tudo:
-                    if animal[0] == [especie[especie.index([org[0],org[1]])][0][0],novapos] and animal[1] != "Alimento":
+                    if animal[1] == [especie[especie.index([org[0],org[1],org[2]])][0][0],novapos] and animal[0] != "Alimento":
                         sobrepos = True
                 if not sobrepos:
-                    especie[especie.index([org[0],org[1]])][0][1] = novapos
+                    especie[especie.index([org[0],org[1],org[2]])][0][1] = novapos
+                    if especie == self.verdes:
+                        self.pos_tudo[self.pos_tudo.index(["Verde",[org[0]]])][1][1] = novapos
+                    else:
+                        self.pos_tudo[self.pos_tudo.index(["Vermelho",[org[0]]])][1][1] = novapos
+
+    def comp_comer(self, ser):
+        oser = list()
+        for bicho in self.pos_tudo:
+            if bicho[1] == ser[0]:
+                oser.append(bicho)
+        for compare in self.comp_escolherComida(self.verdes):
+            if dis_vet(compare[0], compare[3]) == 1 and compare[0] != oser[1]:
+                if oser[0] == "Verdes":
+                    self.verdes[self.verdes.index([compare[0],compare[1],compare[2]])][2] += 0.5
+                    self.verdes[self.verdes.index([ser[0],ser[1],ser[2]])][2] += 0.5
+                    self.pos_alimento.remove([self.pos_alimento.index(ser[3])])
+                    self.pos_tudo.remove(["Alimento", self.pos_tudo.index(["Alimento", ser[3]])])
+                else:
+                    if sorteio(1,2) == 1:
+                        self.verdes[self.verdes.index([compare[0], compare[1], compare[2]])][2] += 1.0
+                        self.pos_alimento.remove([self.pos_alimento.index(ser[3])])
+                        self.pos_tudo.remove(["Alimento", self.pos_tudo.index(["Alimento", ser[3]])])
+                    else:
+                        self.vermelhos[self.vermelhos.index([ser[0], ser[1], ser[2]])][2] += 1.0
+                        self.pos_alimento.remove([self.pos_alimento.index(ser[3])])
+                        self.pos_tudo.remove(["Alimento", self.pos_tudo.index(["Alimento", ser[3]])])
+                break
+        for compare in self.comp_escolherComida(self.vermelhos):
+            if dis_vet(compare[0], compare[3]) == 1 and compare[0] != oser[1]:
+                if oser[0] == "Vermelhos":
+                    self.vermelhos[self.vermelhos.index([compare[0],compare[1],compare[2]])][2] += 0.5
+                    self.vermelhos[self.vermelhos.index([ser[0],ser[1],ser[2]])][2] += 0.5
+                    self.pos_alimento.remove([self.pos_alimento.index(ser[3])])
+                    self.pos_tudo.remove(["Alimento", self.pos_tudo.index(["Alimento", ser[3]])])
+                else:
+                    if sorteio(1,2) == 1:
+                        self.verdes[self.verdes.index([ser[0], ser[1], ser[2]])][2] += 1.0
+                        self.pos_alimento.remove([self.pos_alimento.index(ser[3])])
+                        self.pos_tudo.remove(["Alimento", self.pos_tudo.index(["Alimento", ser[3]])])
+                    else:
+                        self.vermelhos[self.vermelhos.index([compare[0], compare[1], compare[2]])][2] += 1.0
+                        self.pos_alimento.remove([self.pos_alimento.index(ser[3])])
+                        self.pos_tudo.remove(["Alimento", self.pos_tudo.index(["Alimento", ser[3]])])
+                break
+
+'''    def comp_reproduzir(self):
+        while True:
+            for ser in self.vermelhos:
+                if ser[2] >= 2.0:'''
+
+
+SimComportamento()
