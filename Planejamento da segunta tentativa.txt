@@ -1,0 +1,6 @@
+# 2 Classes - Geração e Ação
+# 3 Var principais:
+ 	Posição geral (alimentos e seres)
+ 	Posição dos seres ([Tipo, posição, tempo de vida, alimento])
+ 	Posição dos alimentos ([Posição])
+# 

@@ -76,7 +76,6 @@ class SimGerar:
             self.gerar_pos(self.verdes, "Verde")
             self.verdes[len(self.verdes) - 1].append(5)
             self.verdes[len(self.verdes) - 1].append(0.0)
-            print(self.verdes)
         for _ in range(0,self.num_vermelhos):
             self.gerar_pos(self.vermelhos, "Vermelho")
             self.vermelhos[len(self.vermelhos) - 1].append(10)
@@ -87,20 +86,15 @@ class SimComportamento(SimGerar):
     def __init__(self):
         super().__init__()
         while self.num_rodadas != self.rodada:
-            mov_vermelhos = Corrente(target=self.comp_movimento,args=[self.vermelhos,])
-            mov_verdes = Corrente(target=self.comp_movimento, args=[self.verdes, ])
-            mov_vermelhos.start()
-            mov_verdes.start()
+            self.comp_movimento(self.verdes)
+            self.comp_movimento(self.vermelhos)
             self.comp_reproduzir(self.verdes,1.0,"Verde")
             self.comp_reproduzir(self.vermelhos,2.0,"Vermelho")
-            mov_vermelhos.join()
-            mov_verdes.join()
             self.comp_tempodeVida()
 
     def comp_escolherComida(self, especie):
         comida_perto = list()
         for ser in especie:
-            print(ser)
             dis_menor = None
             for alimento in self.pos_alimento:
                 if alimento == self.pos_alimento[0]:
@@ -119,13 +113,12 @@ class SimComportamento(SimGerar):
     def comp_movimento(self,especie):
         for org in self.comp_escolherComida(especie):
             getdis = [org[3][0]-org[0][0],org[3][1]-org[0][1]]
-
             if dis_vet(org[0],org[3]) == 1:
                 self.comp_comer(org)
 
             elif getdis[0] < -1 or getdis[0] > 1:
                 mov = getdis[0] // modulo(getdis[0])
-                novapos = especie[especie.index([org[0],org[1],org[2]])][0][0] + mov
+                novapos = especie[especie.index([org[0], org[1], org[2]])][0][0] + mov
                 sobrepos = False
                 for animal in self.pos_tudo:
                     if animal[1] == [novapos,especie[especie.index([org[0],org[1],org[2]])][0][1]] and animal[0] != "Alimento":
@@ -152,12 +145,12 @@ class SimComportamento(SimGerar):
                         self.pos_tudo[self.pos_tudo.index(["Vermelho",[org[0]]])][1][1] = novapos
 
     def comp_comer(self, ser):
-        oser = list()
+        oser = None
         for bicho in self.pos_tudo:
             if bicho[1] == ser[0]:
-                oser.append(bicho)
+                oser = bicho
         for compare in self.comp_escolherComida(self.verdes):
-            if dis_vet(compare[0], compare[3]) == 1 and compare[0] != oser[1]:
+            if dis_vet(compare[3], compare[0]) == 1 and compare[0] != oser[1]:
                 if oser[0] == "Verdes":
                     self.verdes[self.verdes.index([compare[0],compare[1],compare[2]])][2] += 0.5
                     self.verdes[self.verdes.index([ser[0],ser[1],ser[2]])][2] += 0.5
