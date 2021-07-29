@@ -130,7 +130,7 @@ class SimComportamento(SimGerar):
                     else:
                         self.pos_tudo[self.pos_tudo.index(["Vermelho",[org[0]]])][1][0] = novapos
 
-            elif getdis[1] < -1 or getdis[1] > 1:
+            elif getdis[1] < -1 or getdis[1] > 1 and getdis[0] == 1:
                 mov = getdis[1] // modulo(getdis[1])
                 novapos = especie[especie.index([org[0],org[1],org[2]])][0][1] + mov
                 sobrepos = False
