@@ -14,6 +14,7 @@ from threading import Thread as Corrente
 from time import sleep
 from func_xtra import modulo, dis_vet
 
+
 # Essa classe será responsável por gerar os termos, desde o mapa até os alimentos e seres.
 class Geracao:
     def __init__(self):
@@ -86,4 +87,22 @@ class Geracao:
     def geracao_rodadas(self):
         if self.rodada % self.taxa_alimentos == 0:
             self.gerar_posicao(self.alimento)
+
+
+class Acao(Geracao):
+    def __init__(self):
+        super().__init__()
+        pass
+
+    def procurar_alimento(self):
+        comida_perto = list()
+        for index, ser in enumerate(self.seres):
+            dis_menor = self.alimento[0]
+            for comida in self.alimento[1:]:
+                if dis_vet(ser[1][3], comida) > dis_vet(dis_menor, ser[1][3]):
+                    dis_menor = comida
+                elif dis_vet(ser[1][3], comida) == dis_vet(dis_menor, ser[1][3]):
+                    dis_menor = escolha([comida, dis_menor])
+            comida_perto.append([index, dis_menor])
+        return comida_perto
 
