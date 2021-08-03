@@ -1,3 +1,4 @@
+from random import choice
 def modulo(a):
     if a < 0:
         a *= -1
@@ -5,3 +6,12 @@ def modulo(a):
 
 def dis_vet(a,b):
     return modulo(a[0]-b[0])+modulo(a[1]-b[1])
+
+def maior(a=list()):
+    final = 0
+    for num, _ in enumerate(a):
+        if num > a[final]:
+            final = num
+        elif num == a[final]:
+            final = choice([final, num])
+    return final

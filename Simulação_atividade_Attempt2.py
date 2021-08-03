@@ -12,7 +12,7 @@ from random import randint as sorteio
 from random import choice as escolha
 from threading import Thread as Corrente
 from time import sleep
-from func_xtra import modulo, dis_vet
+from func_xtra import modulo, dis_vet, maior
 
 
 # Essa classe será responsável por gerar os termos, desde o mapa até os alimentos e seres.
@@ -56,7 +56,7 @@ class Geracao:
                                 rep = True
                         if not rep:
                             self.tudo.append([tipo, pos])
-                            array.append([pos])
+                            array.append(pos)
                             check = False
                     else:
                         self.tudo.append([tipo, pos])
@@ -98,11 +98,27 @@ class Acao(Geracao):
         comida_perto = list()
         for index, ser in enumerate(self.seres):
             dis_menor = self.alimento[0]
-            for comida in self.alimento[1:]:
-                if dis_vet(ser[1][3], comida) > dis_vet(dis_menor, ser[1][3]):
+            for comida in self.alimento:
+                if dis_vet(ser[3], comida) > dis_vet(dis_menor, ser[3]):
                     dis_menor = comida
-                elif dis_vet(ser[1][3], comida) == dis_vet(dis_menor, ser[1][3]):
+                elif dis_vet(ser[3], comida) == dis_vet(dis_menor, ser[3]):
                     dis_menor = escolha([comida, dis_menor])
-            comida_perto.append([index, dis_menor])
+            comida_perto.append((index, dis_menor))
         return comida_perto
 
+    def movimento(self):
+        for index, alimento in self.procurar_alimento():
+            getdis = [self.seres[index][3][0]-alimento[0],self.seres[index][3][1]-alimento[1]]
+            if dis_vet(self.seres[index][3], alimento) > 1:
+                ind = maior(getdis)
+                novapos = self.seres[index][3].copy()
+                novapos[ind] += getdis[ind] // modulo(getdis[ind])
+                sobreposicao = False
+                for ser in self.seres:
+                    if ser[3] == novapos:
+                        sobreposicao = True
+                if not sobreposicao:
+                    self.seres[index][3] = novapos
+
+
+#Acao()
