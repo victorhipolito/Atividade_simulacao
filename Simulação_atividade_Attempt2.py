@@ -36,13 +36,13 @@ class Geracao:
         self.seres = list()
         self.alimento = list()
         # Geração de tudo com base nas variáveis de input.
-        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_verdes, vida=3, ser="Verde")
-        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_vermelhos, vida=3, ser="Vermelho")
+        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_verdes, vida=3, ser="Verde", infos=[0.0, 2.0, 3])
+        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_vermelhos, vida=3, ser="Vermelho", infos=[0.0, 1.5, 2])
         self.gerar_posicao(self.alimento, qt=self.qt_comida)
 
     # Função que gera posições, com apenas um parâmetro obrigatório, que é a array onde vão ser adicionados os termos.
     # De padrão, essa função funciona para alimentos mas é possível gerar seres com a mesma.
-    def gerar_posicao(self, array, tipo="Alimento", qt=1, vida=None, ser=None):
+    def gerar_posicao(self, array, tipo="Alimento", qt=1, vida=None, ser=None, infos=None):
         # If para geração de alimentos.
         if tipo == "Alimento":
             for _ in range(0, qt):
@@ -55,11 +55,11 @@ class Geracao:
                             if unit[1] == pos:
                                 rep = True
                         if not rep:
-                            self.tudo.append([tipo, pos])
+                            self.tudo.append(pos)
                             array.append(pos)
                             check = False
                     else:
-                        self.tudo.append([tipo, pos])
+                        self.tudo.append(pos)
                         array.append([pos])
                         check = False
 
@@ -75,12 +75,12 @@ class Geracao:
                             if unit[1] == pos:
                                 rep = True
                         if not rep:
-                            self.tudo.append([ser, pos])
-                            array.append([ser, vida, 0.0, pos])
+                            self.tudo.append(pos)
+                            array.append([ser, vida, infos, pos])
                             check = False
                     else:
-                        self.tudo.append([ser, pos])
-                        array.append([ser, vida, 0.0, pos])
+                        self.tudo.append(pos)
+                        array.append([ser, vida, infos, pos])
                         check = False
 
     # Função que usa a taxa de geração de alimentos como base para gerar em um intervalo definido de rodadas.
@@ -128,13 +128,32 @@ class Acao(Geracao):
                     if dis_vet(ser[3], alimento) <= 1 and ser != self.seres[index]:
                         competiu = True
                         if ser[0] == self.seres[index][0]:
-                            self.seres[index][2] += 0.5
-                            self.seres[self.seres.index(ser)][2] += 0.5
+                            self.seres[index][2][0] += 0.5
+                            self.seres[self.seres.index(ser)][2][0] += 0.5
                         else:
-                            self.seres[escolha([self.seres.index(ser), index])][2] += 1.0
+                            self.seres[escolha([self.seres.index(ser), index])][2][0] += 1.0
                         break
                 if not competiu:
-                    self.seres[index][2] += 1.0
+                    self.seres[index][2][0] += 1.0
                 self.alimento.remove(alimento)
-                self.tudo.remove(["Alimento", alimento])
+                self.tudo.remove(alimento)
+
+    def reproducao(self):
+        for ser in self.seres:
+            if ser[2][0] >= ser[2][1]:
+                max = 0
+                while max < 4:
+                    pos = [sorteio(0,1), escolha([-1,1])]
+                    newborn = ser[3].copy()
+                    newborn[pos[0]] += pos[1]
+                    if newborn in self.tudo:
+                        max += 1
+                        continue
+                    else:
+                        self.tudo.append(newborn)
+                        definitivo = ser.copy()
+                        definitivo = [definitivo[0],definitivo[2][2],[0.0,definitivo[2][1],definitivo[2][2]],newborn.copy()]
+                        self.seres.append(definitivo)
+                        self.seres[self.seres.index(ser)][2][0] -= self.seres[self.seres.index(ser)][2][1]
+                        break
 
