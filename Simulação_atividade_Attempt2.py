@@ -120,5 +120,21 @@ class Acao(Geracao):
                 if not sobreposicao:
                     self.seres[index][3] = novapos
 
+    def comer(self):
+        for index, alimento in self.procurar_alimento():
+            if dis_vet(alimento, self.seres[index][3]) <= 1:
+                competiu = False
+                for ser in self.seres:
+                    if dis_vet(ser[3], alimento) <= 1 and ser != self.seres[index]:
+                        competiu = True
+                        if ser[0] == self.seres[index][0]:
+                            self.seres[index][2] += 0.5
+                            self.seres[self.seres.index(ser)][2] += 0.5
+                        else:
+                            self.seres[escolha([self.seres.index(ser), index])][2] += 1.0
+                        break
+                if not competiu:
+                    self.seres[index][2] += 1.0
+                self.alimento.remove(alimento)
+                self.tudo.remove(["Alimento", alimento])
 
-#Acao()
