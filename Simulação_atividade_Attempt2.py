@@ -30,6 +30,7 @@ class Geracao:
             else:
                 print("Você colocou valores que excedem o limite do mapa, tente novamente")
         self.taxa_alimentos = int(input("De quantas em quantas rodadas um alimento novo será gerado?\n _ "))
+        self.lim_rodadas = int(input("Até que rodada você quer ver a simulação?\n _ "))
         # Variável de rodada e array de todos os termos do mapa juntos, uma apenas de alimentos e outra apenas de seres.
         self.rodada = 1
         self.tudo = list()
@@ -92,7 +93,16 @@ class Geracao:
 class Acao(Geracao):
     def __init__(self):
         super().__init__()
-        pass
+        while self.rodada <= self.lim_rodadas:
+            comer = Corrente(target=self.comer())
+            comer.start()
+            rep = Corrente(target=self.reproducao())
+            rep.start()
+            self.movimento()
+            comer.join()
+            rep.join()
+            self.vida()
+
 
     def procurar_alimento(self):
         comida_perto = list()
@@ -156,4 +166,15 @@ class Acao(Geracao):
                         self.seres.append(definitivo)
                         self.seres[self.seres.index(ser)][2][0] -= self.seres[self.seres.index(ser)][2][1]
                         break
+
+    def vida(self):
+        self.rodada += 1
+        condenados = list()
+        for index, ser in enumerate(self.seres):
+            self.seres[index][1] -= 1
+            if ser[1] <= 0:
+                condenados.append(ser)
+        for f in condenados:
+            self.seres.remove(f)
+            self.tudo.remove(f[3])
 
