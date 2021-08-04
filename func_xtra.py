@@ -10,8 +10,8 @@ def dis_vet(a,b):
 def maior(a=list()):
     final = 0
     for num, _ in enumerate(a):
-        if num > a[final]:
+        if _ > a[final]:
             final = num
-        elif num == a[final]:
+        elif _ == a[final]:
             final = choice([final, num])
     return final
