@@ -61,7 +61,7 @@ class Geracao:
                             check = False
                     else:
                         self.tudo.append(pos)
-                        array.append([pos])
+                        array.append(pos)
                         check = False
 
         # If para geração de seres.
@@ -128,7 +128,9 @@ class Acao(Geracao):
                     if ser[3] == novapos:
                         sobreposicao = True
                 if not sobreposicao:
+                    self.tudo[self.tudo.index(self.seres[index][3])] = novapos
                     self.seres[index][3] = novapos
+
 
     def comer(self):
         for index, alimento in self.procurar_alimento():
@@ -168,13 +170,18 @@ class Acao(Geracao):
                         break
 
     def vida(self):
+        print("a")
         self.rodada += 1
         condenados = list()
         for index, ser in enumerate(self.seres):
             self.seres[index][1] -= 1
             if ser[1] <= 0:
                 condenados.append(ser)
-        for f in condenados:
-            self.seres.remove(f)
-            self.tudo.remove(f[3])
+        if len(condenados) >= 1:
+            for f in condenados:
+                self.seres.remove(f)
+                print(f)
+                print(self.tudo)
+                self.tudo.remove(f[3])
 
+Acao()
