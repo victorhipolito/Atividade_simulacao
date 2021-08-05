@@ -34,8 +34,8 @@ class Geracao:
         self.estatisticas = [["Alimentos", 0], ["Verdes", 0], ["Vermelhos", 0],
                              ["Mortos verdes", 0], ["Mortos vermelhos", 0]]
         # Geração de tudo com base nas variáveis de input.
-        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_verdes, vida=3, ser="Verde", infos=[0.0, 2.0, 3])
-        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_vermelhos, vida=2, ser="Vermelho", infos=[0.0, 1.5, 2])
+        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_verdes, vida=6, ser="Verde", infos=[0.0, 2.0, 6])
+        self.gerar_posicao(self.seres, tipo="Ser", qt=self.qt_vermelhos, vida=4, ser="Vermelho", infos=[0.0, 1.5, 4])
         self.gerar_posicao(self.alimento, qt=self.qt_comida)
 
     # Função que gera posições, com apenas um parâmetro obrigatório, que é a array onde vão ser adicionados os termos.
@@ -131,9 +131,9 @@ class Acao(Geracao):
                     print(f"A espécie Vermelha foi a única que sobreviveu.")
         else:
             if maior(numf) == 0:
-                print(f"O Verde foi aproximadamente {int((numf[1]*numf[0])/100)}% maior do que o Vermelho no final.")
+                print(f"O Verde foi aproximadamente {int((numf[1]*numf[0]))}% maior do que o Vermelho no final.")
             else:
-                print(f"O Vermelho foi aproximadamente {int((numf[1]*numf[0])/100)}% maior do que o Verde no final.")
+                print(f"O Vermelho foi aproximadamente {int((numf[1]*numf[0]))}% maior do que o Verde no final.")
         print("+="*30 + f"\nVerdes no final: {numf[0]}\nVermelhos no final: {numf[1]}")
         for est in self.estatisticas:
             print("+="*30 + f"\n{est[0]}: {est[1]}")
